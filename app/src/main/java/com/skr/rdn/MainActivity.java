@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 		
 		imgRootPath = "https://kcksejyyjfgpcdmgtzrc.supabase.co/storage/v1/object/public/product_images/";
 		url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
-	
+	    
 		RequestQueue queue = Volley.newRequestQueue(this);
 		
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 			try {
 				
 				JSONArray products = response.getJSONArray("data");
-			
+			    
 				for (int i = 0; i < products.length(); i++) {
 					
 					JSONObject product = products.getJSONObject(i);
@@ -151,17 +151,5 @@ public class MainActivity extends AppCompatActivity {
 		});
 		
 		queue.add(jsonObjectRequest);
-		
-		
-		
     }
-
-	private void fetchProduct() {
-		String url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
-		
-		// RequestQueue queue = Volley.newRequestQueue(this);
-		
-		// JSONObject jsonBody = new JSONObject();
-	}
-
 }
