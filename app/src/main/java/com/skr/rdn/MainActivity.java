@@ -32,7 +32,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 	
 	LinearLayout llMain;
-	String metaUrl;
+	String url, imgRootPath;
 	TextView textView;
 	
     @Override
@@ -44,24 +44,29 @@ public class MainActivity extends AppCompatActivity {
 		llMain = findViewById(R.id.llMain);
 		textView = findViewById(R.id.textView);
 		
-		metaUrl = "https://raw.githubusercontent.com/SKR0411/RDN2025/main/products.json";
+		imgRootPath = "https://kcksejyyjfgpcdmgtzrc.supabase.co/storage/v1/object/public/product_images/";
+		url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
 	
 		RequestQueue queue = Volley.newRequestQueue(this);
 		
-		JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
 		Request.Method.GET,
-		metaUrl,
+		url,
 		null,
 		response -> {
+			
 			try {
-				for (int i = 0; i < response.length(); i++) {
+				
+				JSONArray products = response.getJSONArray("data");
+			
+				for (int i = 0; i < products.length(); i++) {
 					
-					JSONObject product = response.getJSONObject(i);
+					JSONObject product = products.getJSONObject(i);
 					String name = product.getString("name");
 					String price = product.getString("price");
 					String unit = product.getString("unit");
 					String type = product.getString("type");
-					String imgUrl = product.getString("image");
+					String imgUrl = imgRootPath + product.getString("file_name");
 					
 					// llMain is your parent layout (should be vertical)
 					LinearLayout llProduct = new LinearLayout(this);
@@ -145,10 +150,18 @@ public class MainActivity extends AppCompatActivity {
 			Toast.makeText(this, "VolleyError: " + error.toString(), Toast.LENGTH_LONG).show();
 		});
 		
-		queue.add(jsonArrayRequest);
+		queue.add(jsonObjectRequest);
 		
 		
 		
     }
+
+	private void fetchProduct() {
+		String url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
+		
+		// RequestQueue queue = Volley.newRequestQueue(this);
+		
+		// JSONObject jsonBody = new JSONObject();
+	}
 
 }
