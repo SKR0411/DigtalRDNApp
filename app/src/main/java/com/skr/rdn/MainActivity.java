@@ -1,8 +1,10 @@
 package com.skr.rdn;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.StrictMode;
 import android.text.InputType;
 import android.view.Gravity;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     String imgRootPath = "https://kcksejyyjfgpcdmgtzrc.supabase.co/storage/v1/object/public/product_images/";
     String url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
 
+	double total = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
         llMain = findViewById(R.id.llMain);
         textView = findViewById(R.id.textView);
+
+		Button payBtn = findViewById(R.id.payNow);
+
+		payBtn.setOnClickListener(v -> payWithUPI());
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -153,4 +162,22 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
+
+	private void payWithUPI() {
+		if (total < 0) {
+			Toast.makeText(this, "Minimum purchase Rs. 10", Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		String uri = String.format(Locale.US, "upi://pay?pa=Q060474773@ybl&pn=Rongpur Daily Needs&am=%.2f&cu=INR", total);
+
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+
+		try {
+			startActivity(intent);
+		} catch (Exception e) {
+			Toast.makeText(this, "No UPI app found", Toast.LENGTH_SHORT).show();
+		}
+	}
+
 }
