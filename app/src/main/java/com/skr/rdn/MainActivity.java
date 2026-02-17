@@ -31,8 +31,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     
-    LinearLayout llMain = findViewById(R.id.llMain);
-    TextView textView = findViewById(R.id.textView);
+    LinearLayout llMain;
+    TextView textView;
 
     String imgRootPath = "https://kcksejyyjfgpcdmgtzrc.supabase.co/storage/v1/object/public/product_images/";
     String url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         super.setTitle("Rongpur Daily Needs");
         setContentView(R.layout.activity_main);
+
+        llMain = findViewById(R.id.llMain);
+        textView = findViewById(R.id.textView);
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -66,82 +69,88 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addProduct(JSONObject p) {
-        String name = p.getString("name");
-        String price = p.getString("price");
-        String unit = p.getString("unit");
-        String type = p.getString("type");
-        String imgUrl = imgRootPath + p.getString("file_name");
+		String name = "", price = "", unit = "", type = "", imgUrl = "";
 
-        // llMain is your parent layout (should be vertical)
-        LinearLayout llProduct = new LinearLayout(this);
-        llProduct.setOrientation(LinearLayout.HORIZONTAL);
-        llProduct.setPadding(16, 16, 16, 16);
-        llProduct.setElevation(16f);
-        llProduct.setGravity(Gravity.CENTER_VERTICAL);
-        llProduct.setBackgroundResource(R.drawable.card_bg); // set background drawable
+        try {
+            name = p.getString("name");
+            price = p.getString("price");
+            unit = p.getString("unit");
+            type = p.getString("type");
+            imgUrl = imgRootPath + p.getString("file_name");
 
-        // Create LayoutParams with margin
-        LinearLayout.LayoutParams productParams = new LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+            // llMain is your parent layout (should be vertical)
+            LinearLayout llProduct = new LinearLayout(this);
+            llProduct.setOrientation(LinearLayout.HORIZONTAL);
+            llProduct.setPadding(16, 16, 16, 16);
+            llProduct.setElevation(16f);
+            llProduct.setGravity(Gravity.CENTER_VERTICAL);
+            llProduct.setBackgroundResource(R.drawable.card_bg); // set background drawable
 
-        // Set margin in pixels (left, top, right, bottom)
-        productParams.setMargins(16, 16, 16, 16); // 16px
-        llProduct.setLayoutParams(productParams);
+            // Create LayoutParams with margin
+            LinearLayout.LayoutParams productParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+            );
 
-        // Image
-        ImageView img = new ImageView(this);
-        Glide.with(this)
-        .load(imgUrl)
-        //.override(200, 200) // Optional: same size as your layout
-        //.centerCrop()       // Optional: keeps aspect ratio
-        .into(img);
-        LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(200, 200);
-        imgParams.setMargins(0, 0, 24, 0);
-        img.setLayoutParams(imgParams);
+            // Set margin in pixels (left, top, right, bottom)
+            productParams.setMargins(16, 16, 16, 16); // 16px
+            llProduct.setLayoutParams(productParams);
 
-        // Info Layout
-        LinearLayout llInfo = new LinearLayout(this);
-        llInfo.setOrientation(LinearLayout.VERTICAL);
-        llInfo.setLayoutParams(new LinearLayout.LayoutParams(
-        0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f // take remaining space
-        ));
+            // Image
+            ImageView img = new ImageView(this);
+            Glide.with(this)
+            .load(imgUrl)
+            //.override(200, 200) // Optional: same size as your layout
+            //.centerCrop()       // Optional: keeps aspect ratio
+            .into(img);
+            LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(200, 200);
+            imgParams.setMargins(0, 0, 24, 0);
+            img.setLayoutParams(imgParams);
 
-        // Name
-        TextView txtName = new TextView(this);
-        txtName.setText(name);
-        txtName.setTextSize(18);
-        //txtName.setTypeface(null, Typeface.BOLD);
+            // Info Layout
+            LinearLayout llInfo = new LinearLayout(this);
+            llInfo.setOrientation(LinearLayout.VERTICAL);
+            llInfo.setLayoutParams(new LinearLayout.LayoutParams(
+            0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f // take remaining space
+            ));
 
-        // Price
-        TextView txtPrice = new TextView(this);
-        txtPrice.setText("Rate: ₹" + price + "/" + unit);
+            // Name
+            TextView txtName = new TextView(this);
+            txtName.setText(name);
+            txtName.setTextSize(18);
+            //txtName.setTypeface(null, Typeface.BOLD);
 
-        // Quantity input
-        EditText etQuantity = new EditText(this);
-        etQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
-        etQuantity.setText("1");
-        etQuantity.setEms(3);
+            // Price
+            TextView txtPrice = new TextView(this);
+            txtPrice.setText("Rate: ₹" + price + "/" + unit);
 
-        // Add views to Info
-        llInfo.addView(txtName);
-        llInfo.addView(txtPrice);
-        llInfo.addView(etQuantity);
+            // Quantity input
+            EditText etQuantity = new EditText(this);
+            etQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
+            etQuantity.setText("1");
+            etQuantity.setEms(3);
 
-        // Button
-        Button btnAdd = new Button(this);
-        btnAdd.setText("Buy Now");
-        btnAdd.setBackgroundColor(Color.parseColor("#0f3d2e"));
-        btnAdd.setTextColor(Color.WHITE);
-        btnAdd.setPadding(24, 16, 24, 16);
+            // Add views to Info
+            llInfo.addView(txtName);
+            llInfo.addView(txtPrice);
+            llInfo.addView(etQuantity);
 
-        // Add to main product layout
-        llProduct.addView(img);
-        llProduct.addView(llInfo);
-        llProduct.addView(btnAdd);
+            // Button
+            Button btnAdd = new Button(this);
+            btnAdd.setText("Buy Now");
+            btnAdd.setBackgroundColor(Color.parseColor("#0f3d2e"));
+            btnAdd.setTextColor(Color.WHITE);
+            btnAdd.setPadding(24, 16, 24, 16);
 
-        // Finally add to main layout
-        llMain.addView(llProduct);
+            // Add to main product layout
+            llProduct.addView(img);
+            llProduct.addView(llInfo);
+            llProduct.addView(btnAdd);
+
+            // Finally add to main layout
+            llMain.addView(llProduct);
+        } catch (JSONException e){
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
