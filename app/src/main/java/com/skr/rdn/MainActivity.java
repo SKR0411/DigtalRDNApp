@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 	
 	LinearLayout llMain;
 	TextView textView, totalAmount;
+	Button payBtn;
 
 	String imgRootPath = "https://kcksejyyjfgpcdmgtzrc.supabase.co/storage/v1/object/public/product_images/";
 	String url = "https://digitalrdn.netlify.app/.netlify/functions/get-data";
@@ -51,13 +52,15 @@ public class MainActivity extends AppCompatActivity {
 		llMain = findViewById(R.id.llMain);
 		textView = findViewById(R.id.textView);
 		totalAmount = findViewById(R.id.totalAmount);
-
-		Button payBtn = findViewById(R.id.payNow);
+		payBtn = findViewById(R.id.payNow);
 
 		payBtn.setOnClickListener(v -> payWithUPI());
 
-		RequestQueue queue = Volley.newRequestQueue(this);
+		fetchAndRenderProduct();
+	}
 
+	private void fetchAndRenderProduct() {
+		RequestQueue queue = Volley.newRequestQueue(this);
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
 		Request.Method.GET, url, null,
 		response -> {
@@ -74,11 +77,10 @@ public class MainActivity extends AppCompatActivity {
 		error -> {
 			Toast.makeText(this, "VolleyError: " + error.toString(), Toast.LENGTH_LONG).show();
 		});
-
 		queue.add(jsonObjectRequest);
 	}
 
-	public void addProduct(JSONObject p) {
+	private void addProduct(JSONObject p) {
 		try {
 			String name = p.getString("name");
 			String price = p.getString("price");
