@@ -145,11 +145,23 @@ public class MainActivity extends AppCompatActivity {
 
 			// Button
 			Button btnAdd = new Button(this);
-			btnAdd.setText("Buy Now");
+			btnAdd.setBackgroundResource(R.drawable.rounded_button);
+			btnAdd.setText("Add");
 			btnAdd.setBackgroundColor(Color.parseColor("#0f3d2e"));
 			btnAdd.setTextColor(Color.WHITE);
 			btnAdd.setPadding(24, 16, 24, 16);
-			btnAdd.setOnClickListener(v -> updateTotalAmount(Double.parseDouble(price)));
+			btnAdd.setOnClickListener(v -> {
+				if (btnAdd.getText() == "Add") {
+					updateTotalAmount(Double.parseDouble(price) * Double.parseDouble(etQuantity.getText().toString()));
+					btnAdd.setBackgroundColor(Color.parseColor("#aa3040"));
+					btnAdd.setText("Remove");
+				}
+				else {
+					updateTotalAmount(Double.parseDouble("-" + price) * Double.parseDouble(etQuantity.getText().toString()));
+					btnAdd.setBackgroundColor(Color.parseColor("#0f3d2e"));
+					btnAdd.setText("Add");
+				}
+			});
 
 			// Add to main product layout
 			llProduct.addView(img);
@@ -161,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
 		} catch (JSONException e){
 			Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
 	private void updateTotalAmount(Double productPrice) {
@@ -171,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void payWithUPI() {
-		if (total <= 0) {
+		if (total < 10) {
 			Toast.makeText(this, "Minimum purchase Rs. 10", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -186,5 +197,4 @@ public class MainActivity extends AppCompatActivity {
 			Toast.makeText(this, "No UPI app found", Toast.LENGTH_SHORT).show();
 		}
 	}
-
 }
